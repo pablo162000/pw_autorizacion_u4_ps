@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,30 +23,33 @@ public class WebSecurity {
 	private UserDetailsService userDetailsService;
 	@Autowired
 	private AuthEntryPointJwt unathorizedHandler;
-	
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unathorizedHandler).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests().antMatchers("/API/V1.0/Autorizacion/tokens/obtener/**").permitAll().anyRequest().authenticated();
-		
+		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unathorizedHandler).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				.antMatchers("/tokens/obtener/**").permitAll().anyRequest().authenticated();
+
 		http.authenticationProvider(this.authenticationProvider());
+
 		return http.build();
-		
+
 	}
 
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider =  new DaoAuthenticationProvider();
-	authProvider.setUserDetailsService(userDetailsService);
-	authProvider.setPasswordEncoder(null);
-	return authProvider;
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(this.passwordEncoder());
+		return authProvider;
 	}
-	
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
-		
+
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

@@ -1,4 +1,4 @@
-package com.example.demo.security;
+ package com.example.demo.security;
 
 import java.io.IOException;
 
@@ -19,8 +19,9 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 	public void commence(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response,
 			AuthenticationException authException) throws IOException, javax.servlet.ServletException {
 		// TODO Auto-generated method stub
-		LOG.error("Unauthorized error {}", authException.getMessage());
+		LOG.error("Unauthorized error: {}", authException.getMessage());
 
+		LOG.error(request.getServletPath());
 	}
 
 }
